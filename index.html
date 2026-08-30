@@ -14,15 +14,8 @@ body{margin:0;background:#e9e9e9;color:#171717;font-family:Arial,Helvetica,sans-
 .kicker{color:#b30000;font-weight:800;text-transform:uppercase;font-size:13px;letter-spacing:1px}
 h1{font-family:Georgia,serif;font-size:44px;line-height:1.05;margin:10px 0 12px}
 .meta{color:#777;font-size:14px;border-bottom:1px solid #ddd;padding-bottom:18px}
-.hero{height:330px;margin:24px 0;background:
-linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.6)),
-radial-gradient(circle at 70% 35%,#68717a 0,#293039 25%,#111 65%);
-position:relative;overflow:hidden}
-.fog{position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(220,220,220,.32),transparent);filter:blur(14px)}
-.road{position:absolute;bottom:-60px;left:38%;width:25%;height:260px;background:#252525;transform:perspective(200px) rotateX(12deg)}
-.police{position:absolute;left:9%;bottom:40px;width:220px;height:70px;background:#151515;border-radius:25px 35px 10px 10px}
-.police:before{content:"POLICE";position:absolute;right:15px;top:27px;color:#ddd;font-weight:bold;font-size:18px}
-.light{position:absolute;top:-10px;left:80px;width:65px;height:12px;background:linear-gradient(90deg,#147cff 50%,#ff2020 50%);box-shadow:0 0 35px 12px #466bff}
+.hero-canvas-container{position:relative;width:100%;height:380px;margin:24px 0;background:#05070a;border-radius:4px;overflow:hidden;box-shadow:inset 0 0 20px #000}
+canvas{width:100%;height:100%;display:block}
 .story{font-family:Georgia,serif;font-size:19px;line-height:1.75;max-width:850px}
 .alert{border-left:5px solid #b30000;background:#f6f6f6;padding:18px;margin:25px 0;font-weight:bold}
 .byline{font-weight:bold}
@@ -42,7 +35,9 @@ position:relative;overflow:hidden}
   <h1>Three People Missing After Late-Night Forest Road Accident</h1>
   <div class="meta">October 14, 2026 &nbsp; | &nbsp; 11:42 AM &nbsp; | &nbsp; Riverside County</div>
 
-  <div class="hero"><div class="road"></div><div class="police"><div class="light"></div></div><div class="fog"></div></div>
+  <div class="hero-canvas-container">
+    <canvas id="crashScene"></canvas>
+  </div>
 
   <div class="alert">UPDATE: Authorities have confirmed that the remains of one of the three missing people have been found. The other two remain missing.</div>
 
@@ -69,5 +64,188 @@ position:relative;overflow:hidden}
 </main>
 
 <div class="footer">RIVERSIDE COUNTY NEWS • Fictional in-game news website for THE SILENT ROAD • All events shown are part of the game's story.</div>
+
+<script>
+const canvas = document.getElementById('crashScene');
+const ctx = canvas.getContext('2d');
+
+function renderScene() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const w = canvas.width;
+  const h = canvas.height;
+
+  // Sky background
+  const skyGradient = ctx.createLinearGradient(0, 0, 0, h * 0.4);
+  skyGradient.addColorStop(0, '#030508');
+  skyGradient.addColorStop(1, '#0c131d');
+  ctx.fillStyle = skyGradient;
+  ctx.fillRect(0, 0, w, h);
+
+  // Background Forest Silhouette
+  ctx.fillStyle = '#050a0e';
+  for (let x = 0; x < w; x += 15) {
+    const treeHeight = 120 + Math.sin(x * 0.05) * 35 + (Math.random() * 20);
+    ctx.beginPath();
+    ctx.moveTo(x, h * 0.55);
+    ctx.lineTo(x + 10, h * 0.55 - treeHeight);
+    ctx.lineTo(x + 20, h * 0.55);
+    ctx.fill();
+  }
+
+  // Asphalt Road Perspective
+  ctx.fillStyle = '#1c1f24';
+  ctx.beginPath();
+  ctx.moveTo(w * 0.35, h * 0.45);
+  ctx.lineTo(w * 0.65, h * 0.45);
+  ctx.lineTo(w * 0.95, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fill();
+
+  // Road Line
+  ctx.strokeStyle = '#8a7d32';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([15, 15]);
+  ctx.beginPath();
+  ctx.moveTo(w * 0.5, h * 0.45);
+  ctx.lineTo(w * 0.45, h);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Skid marks
+  ctx.strokeStyle = '#0b0c0e';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(w * 0.2, h);
+  ctx.quadraticCurveTo(w * 0.38, h * 0.7, w * 0.42, h * 0.62);
+  ctx.moveTo(w * 0.26, h);
+  ctx.quadraticCurveTo(w * 0.42, h * 0.7, w * 0.46, h * 0.62);
+  ctx.stroke();
+
+  // Blood Splatters and Pool on Asphalt
+  const bloodGrad = ctx.createRadialGradient(w * 0.48, h * 0.72, 5, w * 0.48, h * 0.72, 45);
+  bloodGrad.addColorStop(0, 'rgba(120, 0, 0, 0.9)');
+  bloodGrad.addColorStop(0.7, 'rgba(70, 0, 0, 0.7)');
+  bloodGrad.addColorStop(1, 'rgba(30, 0, 0, 0)');
+  ctx.fillStyle = bloodGrad;
+  ctx.beginPath();
+  ctx.ellipse(w * 0.48, h * 0.72, 55, 20, Math.PI / 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Blood Droplets
+  ctx.fillStyle = 'rgba(100, 0, 0, 0.85)';
+  const droplets = [[0.43, 0.68], [0.44, 0.75], [0.52, 0.71], [0.54, 0.74], [0.41, 0.73]];
+  droplets.forEach(([dx, dy]) => {
+    ctx.beginPath();
+    ctx.arc(w * dx, h * dy, Math.random() * 4 + 2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // White Pickup Truck (Right/Center Front)
+  ctx.save();
+  ctx.translate(w * 0.52, h * 0.58);
+  ctx.rotate(-0.15);
+  // Cab
+  ctx.fillStyle = '#dcdcdc';
+  ctx.fillRect(-45, -25, 55, 30);
+  // Bed
+  ctx.fillStyle = '#bfbfbf';
+  ctx.fillRect(10, -20, 50, 25);
+  // Dark Windows
+  ctx.fillStyle = '#111';
+  ctx.fillRect(-25, -22, 20, 12);
+  // Smashed/Crumpled Front Hood
+  ctx.fillStyle = '#999';
+  ctx.beginPath();
+  ctx.moveTo(-45, -25);
+  ctx.lineTo(-70, -15);
+  ctx.lineTo(-65, 5);
+  ctx.lineTo(-45, 5);
+  ctx.fill();
+  ctx.restore();
+
+  // Blue Pickup Truck (Smashed into White Pickup)
+  ctx.save();
+  ctx.translate(w * 0.4, h * 0.6);
+  ctx.rotate(0.35);
+  // Cab
+  ctx.fillStyle = '#1e4d8c';
+  ctx.fillRect(-50, -25, 50, 32);
+  // Bed
+  ctx.fillStyle = '#143561';
+  ctx.fillRect(-100, -22, 50, 28);
+  // Windows
+  ctx.fillStyle = '#0a1728';
+  ctx.fillRect(-35, -22, 22, 14);
+  // Crumpled Engine Block
+  ctx.fillStyle = '#0d2442';
+  ctx.beginPath();
+  ctx.moveTo(0, -25);
+  ctx.lineTo(25, -10);
+  ctx.lineTo(15, 8);
+  ctx.lineTo(0, 7);
+  ctx.fill();
+  ctx.restore();
+
+  // Police Cruiser (Foreground Left)
+  ctx.save();
+  ctx.translate(w * 0.15, h * 0.75);
+  ctx.rotate(-0.1);
+  // Main Body (Black)
+  ctx.fillStyle = '#0d0d0d';
+  ctx.fillRect(-90, -20, 160, 45);
+  // White Door Panel
+  ctx.fillStyle = '#f0f0f0';
+  ctx.fillRect(-40, -18, 55, 41);
+  // Police Text
+  ctx.fillStyle = '#111';
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText('POLICE', -35, 8);
+  // Windows
+  ctx.fillStyle = '#1a2634';
+  ctx.fillRect(-45, -35, 65, 16);
+  // Wheels
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(-60, 25, 16, 0, Math.PI * 2);
+  ctx.arc(45, 25, 16, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Police Lightbar Strobes & Environment Lighting
+  const lightX = w * 0.15;
+  const lightY = h * 0.65;
+  
+  // Blue Beacon Glow
+  const blueGlow = ctx.createRadialGradient(lightX - 25, lightY, 5, lightX - 25, lightY, 180);
+  blueGlow.addColorStop(0, 'rgba(0, 102, 255, 0.85)');
+  blueGlow.addColorStop(1, 'rgba(0, 102, 255, 0)');
+  ctx.fillStyle = blueGlow;
+  ctx.beginPath();
+  ctx.arc(lightX - 25, lightY, 180, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Red Beacon Glow
+  const redGlow = ctx.createRadialGradient(lightX + 25, lightY, 5, lightX + 25, lightY, 180);
+  redGlow.addColorStop(0, 'rgba(255, 26, 26, 0.85)');
+  redGlow.addColorStop(1, 'rgba(255, 26, 26, 0)');
+  ctx.fillStyle = redGlow;
+  ctx.beginPath();
+  ctx.arc(lightX + 25, lightY, 180, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Fog & Haze Layer
+  const fog = ctx.createLinearGradient(0, h * 0.4, 0, h);
+  fog.addColorStop(0, 'rgba(15, 23, 30, 0.2)');
+  fog.addColorStop(0.5, 'rgba(200, 215, 230, 0.15)');
+  fog.addColorStop(1, 'rgba(10, 12, 15, 0.4)');
+  ctx.fillStyle = fog;
+  ctx.fillRect(0, 0, w, h);
+}
+
+window.addEventListener('load', renderScene);
+window.addEventListener('resize', renderScene);
+</script>
 </body>
 </html>
