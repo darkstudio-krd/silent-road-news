@@ -8,7 +8,11 @@
 *{box-sizing:border-box}
 body{margin:0;background:#e9e9e9;color:#171717;font-family:Arial,Helvetica,sans-serif}
 .header{background:#101010;color:white;padding:18px 7%;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:28px;font-weight:800;letter-spacing:1px}.live{font-size:12px;color:#ddd}
+.logo{font-size:28px;font-weight:800;letter-spacing:1px}
+.header-right{display:flex;align-items:center;gap:15px}
+.live{font-size:12px;color:#ddd}
+.lang-btn{background:#222;color:#fff;border:1px solid #444;padding:6px 12px;border-radius:4px;font-size:12px;cursor:pointer}
+.lang-btn:hover{background:#333}
 .nav{background:#b30000;color:white;padding:10px 7%;font-weight:bold;font-size:14px}
 .container{max-width:1050px;margin:28px auto;background:white;padding:38px;box-shadow:0 2px 10px #bbb}
 .kicker{color:#b30000;font-weight:800;text-transform:uppercase;font-size:13px;letter-spacing:1px}
@@ -22,38 +26,64 @@ h1{font-family:Georgia,serif;font-size:44px;line-height:1.05;margin:10px 0 12px}
 .byline{font-weight:bold}
 .footer{background:#151515;color:#aaa;text-align:center;padding:28px;font-size:12px;margin-top:30px}
 .tag{display:inline-block;background:#eee;padding:6px 9px;margin-right:5px;font-size:12px}
+
+/* Language Selection Modal Overlay */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(5px)}
+.modal-box{background:#181818;color:#fff;padding:35px;border-radius:8px;text-align:center;max-width:420px;width:90%;box-shadow:0 10px 30px rgba(0,0,0,0.8);border:1px solid #333}
+.modal-box h2{margin-top:0;font-size:22px;letter-spacing:1px;color:#fff}
+.modal-box p{color:#aaa;font-size:14px;margin-bottom:25px}
+.lang-options{display:flex;flex-direction:column;gap:12px}
+.lang-option-btn{background:#2a2a2a;color:#fff;border:1px solid #444;padding:12px;border-radius:6px;font-size:15px;font-weight:bold;cursor:pointer;transition:all 0.2s}
+.lang-option-btn:hover{background:#b30000;border-color:#b30000}
+
+/* RTL Support for Arabic and Kurdish */
+body.rtl { direction: rtl; font-family: Tahoma, Arial, sans-serif; }
+body.rtl .alert { border-left: none; border-right: 5px solid #b30000; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="logo">RIVERSIDE COUNTY NEWS</div>
-  <div class="live">LOCAL • BREAKING NEWS</div>
+
+<div class="modal-overlay" id="langModal">
+  <div class="modal-box">
+    <h2>SELECT YOUR LANGUAGE</h2>
+    <p>Please choose a language to continue / تکایە زمانێک هەڵبژێرە / اختر اللغة</p>
+    <div class="lang-options">
+      <button class="lang-option-btn" onclick="selectLanguage('en')">English</button>
+      <button class="lang-option-btn" onclick="selectLanguage('ku')">کوردی (Kurdish Sorani)</button>
+      <button class="lang-option-btn" onclick="selectLanguage('ar')">العربية (Arabic)</button>
+      <button class="lang-option-btn" onclick="selectLanguage('ja')">日本語 (Japanese)</button>
+      <button class="lang-option-btn" onclick="selectLanguage('de')">Deutsch (German)</button>
+    </div>
+  </div>
 </div>
-<div class="nav">BREAKING NEWS &nbsp; | &nbsp; LOCAL &nbsp; | &nbsp; PUBLIC SAFETY &nbsp; | &nbsp; WEATHER</div>
+
+<div class="header">
+  <div class="logo" id="logo">RIVERSIDE COUNTY NEWS</div>
+  <div class="header-right">
+    <div class="live" id="liveTag">LOCAL • BREAKING NEWS</div>
+    <button class="lang-btn" onclick="openLangModal()">🌐 Language</button>
+  </div>
+</div>
+<div class="nav" id="navBar">BREAKING NEWS &nbsp; | &nbsp; LOCAL &nbsp; | &nbsp; PUBLIC SAFETY &nbsp; | &nbsp; WEATHER</div>
 
 <main class="container">
-  <div class="kicker">Breaking News • Public Safety</div>
-  <h1>Five Involved, Four Missing After Late-Night Forest Road Crash</h1>
-  <div class="meta">October 14, 2021 &nbsp; | &nbsp; 11:42 AM &nbsp; | &nbsp; Riverside County</div>
+  <div class="kicker" id="kicker">Breaking News • Public Safety</div>
+  <h1 id="title">Five Involved, Four Missing After Late-Night Forest Road Crash</h1>
+  <div class="meta" id="meta">October 14, 2021 &nbsp; | &nbsp; 11:42 AM &nbsp; | &nbsp; Riverside County</div>
 
   <div class="hero-image-container">
     <img src="crash-scene.jpg" alt="Scene of the crash showing police cruiser and smashed pickup trucks on a dark forest road">
   </div>
-  <div class="caption">Emergency vehicles at the scene of the two-pickup crash along Riverside Forest road late Wednesday night.</div>
+  <div class="caption" id="caption">Emergency vehicles at the scene of the two-pickup crash along Riverside Forest road late Wednesday night.</div>
 
-  <div class="alert">UPDATE: Authorities have confirmed that Officer Ethan was found alive at the scene with severe injuries and has been rushed to the hospital. He is currently the sole survivor located, while four others—Daniel, Daniel's wife, Ethan's wife Jena, and the driver who caused the crash—remain missing.</div>
+  <div class="alert" id="alertBox">UPDATE: Authorities have confirmed that Officer Ethan was found alive at the scene with severe injuries and has been rushed to the hospital. He is currently the sole survivor located, while four others—Daniel, Daniel's wife, Ethan's wife Jena, and the driver who caused the crash—remain missing.</div>
 
-  <div class="story">
+  <div class="story" id="storyContent">
     <p><span class="byline">RIVERSIDE COUNTY —</span> Authorities are investigating a major two-vehicle accident on an isolated road near Riverside Forest involving five individuals following a late-night head-on crash.</p>
-
     <p>Emergency crews responding to the scene discovered two heavily damaged pickup trucks. Investigators confirmed five total individuals were involved in the incident: two drivers and three passengers.</p>
-
     <p>Search teams located Officer Ethan near the wreck alive, suffering from severe injuries. Paramedics rushed him to the hospital, where he is currently receiving emergency medical treatment. He is the only person located so far.</p>
-
     <p>Four other individuals connected to the crash remain completely unaccounted for: Ethan's coworker Daniel, Daniel's wife, Ethan's wife Jena, and the driver of the second vehicle responsible for causing the collision.</p>
-
     <p>Search and rescue units continue to sweep the surrounding forest density and nearby terrain as the investigation into the cause of the collision and the subsequent vanishings remains active.</p>
-
     <p><strong>Anyone with information about the incident is asked to contact the Riverside County Sheriff's Office.</strong></p>
   </div>
 
@@ -65,6 +95,141 @@ h1{font-family:Georgia,serif;font-size:44px;line-height:1.05;margin:10px 0 12px}
   </div>
 </main>
 
-<div class="footer">RIVERSIDE COUNTY NEWS • Fictional in-game news website for THE SILENT ROAD • All events shown are part of the game's story.</div>
+<div class="footer" id="footerText">RIVERSIDE COUNTY NEWS • Fictional in-game news website for THE SILENT ROAD • All events shown are part of the game's story.</div>
+
+<script>
+const translations = {
+  en: {
+    rtl: false,
+    logo: "RIVERSIDE COUNTY NEWS",
+    liveTag: "LOCAL • BREAKING NEWS",
+    navBar: "BREAKING NEWS &nbsp; | &nbsp; LOCAL &nbsp; | &nbsp; PUBLIC SAFETY &nbsp; | &nbsp; WEATHER",
+    kicker: "Breaking News • Public Safety",
+    title: "Five Involved, Four Missing After Late-Night Forest Road Crash",
+    meta: "October 14, 2021 &nbsp; | &nbsp; 11:42 AM &nbsp; | &nbsp; Riverside County",
+    caption: "Emergency vehicles at the scene of the two-pickup crash along Riverside Forest road late Wednesday night.",
+    alertBox: "UPDATE: Authorities have confirmed that Officer Ethan was found alive at the scene with severe injuries and has been rushed to the hospital. He is currently the sole survivor located, while four others—Daniel, Daniel's wife, Ethan's wife Jena, and the driver who caused the crash—remain missing.",
+    storyContent: `
+      <p><span class="byline">RIVERSIDE COUNTY —</span> Authorities are investigating a major two-vehicle accident on an isolated road near Riverside Forest involving five individuals following a late-night head-on crash.</p>
+      <p>Emergency crews responding to the scene discovered two heavily damaged pickup trucks. Investigators confirmed five total individuals were involved in the incident: two drivers and three passengers.</p>
+      <p>Search teams located Officer Ethan near the wreck alive, suffering from severe injuries. Paramedics rushed him to the hospital, where he is currently receiving emergency medical treatment. He is the only person located so far.</p>
+      <p>Four other individuals connected to the crash remain completely unaccounted for: Ethan's coworker Daniel, Daniel's wife, Ethan's wife Jena, and the driver of the second vehicle responsible for causing the collision.</p>
+      <p>Search and rescue units continue to sweep the surrounding forest density and nearby terrain as the investigation into the cause of the collision and the subsequent vanishings remains active.</p>
+      <p><strong>Anyone with information about the incident is asked to contact the Riverside County Sheriff's Office.</strong></p>
+    `,
+    footerText: "RIVERSIDE COUNTY NEWS • Fictional in-game news website for THE SILENT ROAD • All events shown are part of the game's story."
+  },
+  ku: {
+    rtl: true,
+    logo: "هەواڵەکانی ڕیڤەرساید كاونتی",
+    liveTag: "ناوخۆ • هەواڵی بەپەلە",
+    navBar: "هەواڵی بەپەلە &nbsp; | &nbsp; ناوخۆ &nbsp; | &nbsp; سەلامەتی گشتی &nbsp; | &nbsp; کەشوهەوا",
+    kicker: "هەواڵی بەپەلە • سەلامەتی گشتی",
+    title: "پێنج کەس تووشی ڕووداو بوون و چوار کەسیان بێسەروشوێنن لە دوای پێکدادانێکی درەنگانی شەو لە ڕێگای دارستانەکە",
+    meta: "١٤ی تشرینی یەکەمی ٢٠٢١ &nbsp; | &nbsp; ١١:٤٢ی بەیانی &nbsp; | &nbsp; ڕیڤەرساید كاونتی",
+    caption: "ئۆتۆمبێلەکانی فریاگوزاری لە شوێنی پێکدادانی دوو پیکابەکە لەسەر ڕێگای دارستانی ڕیڤەرساید لە درەنگانی شەوی چوارشەممە.",
+    alertBox: "زانیاری نوێ: دەسەڵاتداران پشتڕاستیان کردەوە کە ئەفسەر ئیتان بە زیندووی و بە برینداری سەخت لە شوێنی ڕووداوەکە دۆزراوەتەوە و ڕەوانەی نەخۆشخانە کراوە. ئەو تا تەنها ڕزگاربووە کە دۆزرابێتەوە، لەکاتێکدا چوار کەسەکەی تر—دانیال، هاوسەری دانیال، جێنا هاوسەری ئیتان، و شۆفێری ئۆتۆمبێلەکەی تر—هێشتا بێسەروشوێنن.",
+    storyContent: `
+      <p><span class="byline">ڕیڤەرساید كاونتی —</span> دەسەڵاتداران لە لێکۆڵینەوەدان لەسەر ڕووداوێکی گەورەی هاتووچۆ لەنێوان دوو ئۆتۆمبێل لەسەر ڕێگایەکی دابڕاو لە نزیک دارستانی ڕیڤەرساید کە پێنج کەسی تێدا بووە دوای پێکدادانێکی ڕووبەڕوو لە درەنگانی شەودا.</p>
+      <p>تیمەکانی فریاگوزاری کە گەیشتنە شوێنی ڕووداوەکە دوو ئۆتۆمبێلی پیکابی زۆر تێکچوویان دۆزییەوە. لێکۆڵەران پشتڕاستیان کردەوە کە بە کۆی گشتی پێنج کەس لە ڕووداوەکەدا بوون: دوو شۆفێر و سێ سەرنشین.</p>
+      <p>تیمەکانی گەڕان ئەفسەر ئیتانیان لە نزیک تێکشکاوەکە بە زیندووی دۆزییەوە لەکاتێکدا برینی سەختی هەبوو. کارمەندانی تەندروستی بە خێرایی گواستیانەوە بۆ نەخۆشخانە و لەوێ چاودێری پزیشکی بەپەلە وەردەگرێت. ئەو تەنها کەسە کە تا ئێستا دۆزرابێتەوە.</p>
+      <p>چوار کەسەکەی تر کە پەیوەندییان بە ڕووداوەکەوە هەیە بە تەواوی بێسەروشوێنن: دانیال هاوکاری ئیتان، هاوسەری دانیال، جێنا هاوسەری ئیتان، و شۆفێری ئۆتۆمبێلی دووەم کە بووەتە هۆی پێکدادانەکە.</p>
+      <p>تیمەکانی گەڕان و ڕزگارکردن بەردەوامن لە گەڕان لە ناو دارستانەکە و ناوچەکانی دەوروبەری، لەکاتێکدا لێکۆڵینەوە لە هۆکاری پێکدادانەکە و بێسەروشوێنبوونی سەرنشینەکان بەردەوامە.</p>
+      <p><strong>داوا لە هەر کەسێک دەکرێت کە زانیاری لەسەر ئەم ڕووداوە هەیە پەیوەندی بە نوسینگەی شەریفی ڕیڤەرساید كاونتییەوە بکات.</strong></p>
+    `,
+    footerText: "هەواڵەکانی ڕیڤەرساید كاونتی • ماڵپەڕی هەواڵی خەیاڵی ناو یاری بۆ THE SILENT ROAD • هەموو ڕووداوەکان بەشێک لە چیرۆکی یاریەکەن."
+  },
+  ar: {
+    rtl: true,
+    logo: "أخبار مقاطعة ريفرسايد",
+    liveTag: "محلي • أخبار عاجلة",
+    navBar: "أخبار عاجلة &nbsp; | &nbsp; محلي &nbsp; | &nbsp; السلامة العامة &nbsp; | &nbsp; الطقس",
+    kicker: "أخبار عاجلة • السلامة العامة",
+    title: "إصابة خمسة أشخاص وفقدان أربعة بعد حادث تصادم ليلي في طريق الغابة",
+    meta: "١٤ أكتوبر ٢٠٢١ &nbsp; | &nbsp; ١١:٤٢ صباحاً &nbsp; | &nbsp; مقاطعة ريفرسايد",
+    caption: "سيارات الطوارئ في موقع حادث تصادم الشاحنتين على طريق غابة ريفرسايد في وقت متأخر من ليلة الأربعاء.",
+    alertBox: "تحديث: أكدت السلطات أنه تم العثور على الضابط إيثان حياً في موقع الحادث مع إصابات خطيرة وتم نقله إلى المستشفى. وهو حالياً الناجي الوحيد الذي تم العثور عليه، بينما لا يزال أربعة آخرون - دانيال، وزوجة دانيال، وجينا زوجة إيثان، وسائق السيارة المتسببة بالحادث - مفقودين.",
+    storyContent: `
+      <p><span class="byline">مقاطعة ريفرسايد —</span> تحقق السلطات في حادث سير مروع بين سيارتين على طريق معزول بالقرب من غابة ريفرسايد شمل خمسة أشخاص إثر تصادم وجه لوجه في وقت متأخر من الليل.</p>
+      <p>واكتشفت طواقم الطوارئ التي هرعت إلى الموقع شاحنتين متضررتين بشدة. وأكد المحققون أن خمسة أشخاص كانوا متورطين في الحادث: سائقان وثلاثة ركاب.</p>
+      <p>وعثرت فرق البحث على الضابط إيثان حياً بالقرب من الحطام وهو يعاني من إصابات بالغة. ونقله المسعفون إلى المستشفى حيث يتلقى العلاج الطارئ، وهو الشخص الوحيد الذي تم العثور عليه حتى الآن.</p>
+      <p>ولا يزال أربعة أشخاص آخرين مرتبطين بالحادث مفقودين تماماً: دانيال زميل إيثان، وزوجة دانيال، وجينا زوجة إيثان، وسائق السيارة الثانية المتسبب في التصادم.</p>
+      <p>وتواصل فرق البحث والإنقاذ تمشيط الغابة والمناطق المجاورة بينما يستمر التحقيق في أسباب التصادم والاختفاء المفاجئ للركاب.</p>
+      <p><strong>يُطلب من أي شخص لديه معلومات حول الحادث الاتصال بمكتب شريف مقاطعة ريفرسايد.</strong></p>
+    `,
+    footerText: "أخبار مقاطعة ريفرسايد • موقع إخباري خيالي داخل لعبة THE SILENT ROAD • جميع الأحداث هي جزء من قصة اللعبة."
+  },
+  ja: {
+    rtl: false,
+    logo: "リバーサイド郡ニュース",
+    liveTag: "ローカル • ニュース速報",
+    navBar: "速報 &nbsp; | &nbsp; ローカル &nbsp; | &nbsp; 公安 &nbsp; | &nbsp; 天気",
+    kicker: "ニュース速報 • 公安",
+    title: "深夜の森林道路で衝突事故、5人が巻き込まれ4人が行方不明",
+    meta: "2021年10月14日 &nbsp; | &nbsp; 午前11:42 &nbsp; | &nbsp; リバーサイド郡",
+    caption: "水曜日の深夜、リバーサイドの森林道路で発生した2台のトラック衝突事故現場に駆けつけた緊急車両。",
+    alertBox: "更新: 当局は、イーサン警察官が現場で重傷を負った状態で生きて発見され、病院に搬送されたことを確認しました。現在発見された唯一の生存者であり、他の4人（ダニエル、ダニエルの妻、イーサンの妻ジェナ、事故を引き起こしたドライバー）は依然として行方不明です。",
+    storyContent: `
+      <p><span class="byline">リバーサイド郡 —</span> 深夜の正面衝突事故を受け、当局はリバーサイド森林近くの孤立した道路で5人が巻き込まれた大規模な2台の車両事故を調査しています。</p>
+      <p>現場に急行した救急隊は、激しく損傷した2台のピックアップトラックを発見しました。捜査官は、運転手2人と同乗者3人の計5人が事故に関与していたことを確認しました。</p>
+      <p>捜索隊は難破船の近くで重傷を負って生存しているイーサン警察官を発見しました。救急隊員が彼を病院に搬送し、現在緊急治療を受けています。彼はこれまでに発見された唯一の人物です。</p>
+      <p>事故に関連する他の4人（イーサンの同僚ダニエル、ダニエルの妻、イーサンの妻ジェナ、事故の原因となった2台目の車両の運転手）は完全に消息不明のままです。</p>
+      <p>衝突の原因とその後の失踪に関する捜査が続けられる中、捜索救助隊は周辺の森林や近くの地形の捜索を続けています。</p>
+      <p><strong>事故に関する情報をお持ちの方は、リバーサイド郡保安官事務所までご連絡ください。</strong></p>
+    `,
+    footerText: "リバーサイド郡ニュース • THE SILENT ROADのゲーム内架空ニュースサイト • 表示されているすべてのイベントはゲームのストーリーの一部です。"
+  },
+  de: {
+    rtl: false,
+    logo: "RIVERSIDE COUNTY NEWS",
+    liveTag: "LOKAL • EILMELDUNG",
+    navBar: "EILMELDUNG &nbsp; | &nbsp; LOKAL &nbsp; | &nbsp; SICHERHEIT &nbsp; | &nbsp; WETTER",
+    kicker: "Eilmeldung • Öffentliche Sicherheit",
+    title: "Fünf Beteiligte, vier Vermisste nach nächtlichem Unfall auf Waldstraße",
+    meta: "14. Oktober 2021 &nbsp; | &nbsp; 11:42 Uhr &nbsp; | &nbsp; Riverside County",
+    caption: "Einsatzfahrzeuge am Ort des Unfalls zweier Pickups auf der Waldstraße von Riverside am späten Mittwochabend.",
+    alertBox: "UPDATE: Behörden haben bestätigt, dass Officer Ethan schwer verletzt am Unfallort lebend gefunden und ins Krankenhaus gebracht wurde. Er ist derzeit der einzige geborgene Überlebende, während vier weitere Personen – Daniel, Daniels Frau, Ethans Frau Jena und der Unfallverursacher – weiterhin vermisst werden.",
+    storyContent: `
+      <p><span class="byline">RIVERSIDE COUNTY —</span> Die Behörden untersuchen einen schweren Verkehrsunfall mit zwei Fahrzeugen auf einer abgelegenen Straße nahe dem Riverside-Wald, an dem fünf Personen nach einem Frontalzusammenstoß in der Nacht beteiligt waren.</p>
+      <p>Die am Unfallort eintreffenden Rettungskräfte entdeckten zwei stark beschädigte Pickup-Trucks. Ermittler bestätigten, dass insgesamt fünf Personen an dem Vorfall beteiligt waren: zwei Fahrer und drei Insassen.</p>
+
+      <p>Suchteams fanden Officer Ethan lebend mit schweren Verletzungen in der Nähe des Wracks. Rettungssanitäter brachten ihn ins Krankenhaus, wo er derzeit medizinisch versorgt wird. Er ist bisher die einzige gefundene Person.</p>
+      <p>Vier weitere Personen im Zusammenhang mit dem Unfall bleiben spurlos verschwunden: Ethans Arbeitskollege Daniel, Daniels Frau, Ethans Frau Jena und der Fahrer des zweiten Fahrzeugs, der den Zusammenstoß verursachte.</p>
+      <p>Such- und Rettungseinheiten durchkämmen weiterhin das umliegende Waldgebiet, während die Ermittlungen zur Unfallursache und dem anschließenden Verschwinden andauern.</p>
+      <p><strong>Jeder mit Informationen zum Vorfall wird gebeten, sich an das Sheriff-Büro von Riverside County zu wenden.</strong></p>
+    `,
+    footerText: "RIVERSIDE COUNTY NEWS • Fiktive Spiel-Nachrichten-Website für THE SILENT ROAD • Alle gezeigten Ereignisse sind Teil der Spielgeschichte."
+  }
+};
+
+function selectLanguage(lang) {
+  const data = translations[lang];
+  if (!data) return;
+
+  if (data.rtl) {
+    document.body.classList.add('rtl');
+  } else {
+    document.body.classList.remove('rtl');
+  }
+
+  document.getElementById('logo').innerText = data.logo;
+  document.getElementById('liveTag').innerText = data.liveTag;
+  document.getElementById('navBar').innerHTML = data.navBar;
+  document.getElementById('kicker').innerText = data.kicker;
+  document.getElementById('title').innerText = data.title;
+  document.getElementById('meta').innerHTML = data.meta;
+  document.getElementById('caption').innerText = data.caption;
+  document.getElementById('alertBox').innerText = data.alertBox;
+  document.getElementById('storyContent').innerHTML = data.storyContent;
+  document.getElementById('footerText').innerText = data.footerText;
+
+  // Hide Modal
+  document.getElementById('langModal').style.display = 'none';
+}
+
+function openLangModal() {
+  document.getElementById('langModal').style.display = 'flex';
+}
+</script>
 </body>
 </html>
